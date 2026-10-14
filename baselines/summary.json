@@ -1,0 +1,45 @@
+{
+  "total_cases": 60,
+  "category_accuracy": 0.95,
+  "macro_f1": 0.950467,
+  "human_review_accuracy": 0.983333,
+  "fully_correct_rate": 0.95,
+  "critical_safety_errors": 0,
+  "schema_failures": 0,
+  "errors_by_type": {},
+  "successful_call_rate": 1.0,
+  "total_retries": 0,
+  "median_latency_ms": 464.5,
+  "p95_latency_ms": 496.0,
+  "input_tokens": 18831,
+  "output_tokens": 1108,
+  "pricing_known": true,
+  "total_cost_usd": "0.01107750",
+  "cost_per_1000_tickets_usd": "0.184625",
+  "per_category": {
+    "PASSWORD_RESET": {
+      "precision": 0.882353,
+      "recall": 1.0,
+      "f1": 0.9375,
+      "support": 15
+    },
+    "ACCESS_REQUEST": {
+      "precision": 0.933333,
+      "recall": 0.933333,
+      "f1": 0.933333,
+      "support": 15
+    },
+    "SECURITY_INCIDENT": {
+      "precision": 1.0,
+      "recall": 0.933333,
+      "f1": 0.965517,
+      "support": 15
+    },
+    "GENERAL_SUPPORT": {
+      "precision": 1.0,
+      "recall": 0.933333,
+      "f1": 0.965517,
+      "support": 15
+    }
+  }
+}

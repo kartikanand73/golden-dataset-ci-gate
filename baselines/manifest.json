@@ -1,0 +1,38 @@
+{
+  "tool_version": "1.0.0",
+  "timestamp": "2026-10-13T12:21:01+00:00",
+  "git_commit": "22b37d010dc4b415be25dc70523ba52e2dc29293",
+  "dataset_path": "data/golden_dataset.jsonl",
+  "dataset_sha256": "fd99b67bb68f3ad62b4312f9d76363b8d279651e1a1fb1453d88f79cb44f8bdc",
+  "provider": "mock",
+  "model": "mock-v1-baseline",
+  "prompt_sha256": "f71c96ab3eefe16d6499fb0cf6c49f90d862243cf5e2a4d8bbc058667d45d66d",
+  "config_sha256": "1d63f6b970d2b98a7726de2b62bb94ab0a752b8cfbdd105fd896f078c87ca7a8",
+  "pricing_sha256": "01a8765707eda421a78739caf936757cd3d97e5a663c2b915dc9d2660336c6d2",
+  "config": {
+    "provider": "mock",
+    "model": "mock-v1-baseline",
+    "temperature": 0.0,
+    "timeout_seconds": 30.0,
+    "max_retries": 2,
+    "prompt_file": "prompt.txt",
+    "pricing_file": "pricing.yaml"
+  },
+  "python_version": "3.12.3",
+  "metrics": {
+    "category_accuracy": 0.95,
+    "macro_f1": 0.950467,
+    "human_review_accuracy": 0.983333,
+    "critical_safety_errors": 0,
+    "schema_failures": 0,
+    "successful_call_rate": 1.0,
+    "p95_latency_ms": 496.0,
+    "cost_per_1000_tickets_usd": "0.184625"
+  },
+  "approval": {
+    "approved_at": "2026-10-13T12:21:02+00:00",
+    "approved_by": "root",
+    "approved_at_commit": "22b37d010dc4b415be25dc70523ba52e2dc29293",
+    "source_run": "reports/baseline-candidate"
+  }
+}
