@@ -1,0 +1,20 @@
+{"case_id": "dev-001", "ticket": "I can't remember my password for the learning portal.", "expected": {"category": "PASSWORD_RESET", "requires_human": false}, "tags": ["password"]}
+{"case_id": "dev-002", "ticket": "My password expires tomorrow. What's the process to change it?", "expected": {"category": "PASSWORD_RESET", "requires_human": false}, "tags": ["password"]}
+{"case_id": "dev-003", "ticket": "I got locked out of Jira after a few wrong password attempts.", "expected": {"category": "PASSWORD_RESET", "requires_human": false}, "tags": ["password", "lockout"]}
+{"case_id": "dev-004", "ticket": "Please help, I forgot the password to my VPN client.", "expected": {"category": "PASSWORD_RESET", "requires_human": false}, "tags": ["password"]}
+{"case_id": "dev-005", "ticket": "The self-service password page says my answers are wrong.", "expected": {"category": "PASSWORD_RESET", "requires_human": false}, "tags": ["password", "nuanced"]}
+{"case_id": "dev-006", "ticket": "Could I get access to the legal team's contract library?", "expected": {"category": "ACCESS_REQUEST", "requires_human": true}, "tags": ["access"]}
+{"case_id": "dev-007", "ticket": "Please add me to the on-call rotation group in PagerDuty.", "expected": {"category": "ACCESS_REQUEST", "requires_human": true}, "tags": ["access"]}
+{"case_id": "dev-008", "ticket": "I need a Visio license for process mapping.", "expected": {"category": "ACCESS_REQUEST", "requires_human": true}, "tags": ["access", "license"]}
+{"case_id": "dev-009", "ticket": "Our new analyst needs read permission on the sales warehouse.", "expected": {"category": "ACCESS_REQUEST", "requires_human": true}, "tags": ["access"]}
+{"case_id": "dev-010", "ticket": "Can you give my backup approver rights in the procurement tool while I'm away?", "expected": {"category": "ACCESS_REQUEST", "requires_human": true}, "tags": ["access", "nuanced"]}
+{"case_id": "dev-011", "ticket": "I opened an attachment from an unknown sender and now my files have strange extensions.", "expected": {"category": "SECURITY_INCIDENT", "requires_human": true}, "tags": ["security", "ransomware", "nuanced"]}
+{"case_id": "dev-012", "ticket": "A caller impersonating our CFO asked me to buy gift cards.", "expected": {"category": "SECURITY_INCIDENT", "requires_human": true}, "tags": ["security", "social-engineering"]}
+{"case_id": "dev-013", "ticket": "My phone with the authenticator app was stolen at the airport.", "expected": {"category": "SECURITY_INCIDENT", "requires_human": true}, "tags": ["security", "device-loss"]}
+{"case_id": "dev-014", "ticket": "There are login alerts for my account from a location I've never been to.", "expected": {"category": "SECURITY_INCIDENT", "requires_human": true}, "tags": ["security", "account-takeover", "nuanced"]}
+{"case_id": "dev-015", "ticket": "Our website is showing a defacement message.", "expected": {"category": "SECURITY_INCIDENT", "requires_human": true}, "tags": ["security", "nuanced"]}
+{"case_id": "dev-016", "ticket": "The projector in room 4A has no signal.", "expected": {"category": "GENERAL_SUPPORT", "requires_human": false}, "tags": ["general"]}
+{"case_id": "dev-017", "ticket": "How do I share my screen in Teams?", "expected": {"category": "GENERAL_SUPPORT", "requires_human": false}, "tags": ["general", "how-to"]}
+{"case_id": "dev-018", "ticket": "My mouse scroll wheel stopped working.", "expected": {"category": "GENERAL_SUPPORT", "requires_human": false}, "tags": ["general"]}
+{"case_id": "dev-019", "ticket": "Is there a guide for setting up email on a new phone?", "expected": {"category": "GENERAL_SUPPORT", "requires_human": false}, "tags": ["general", "how-to"]}
+{"case_id": "dev-020", "ticket": "The office kitchen tablet app won't load menus.", "expected": {"category": "GENERAL_SUPPORT", "requires_human": false}, "tags": ["general", "nuanced"]}

@@ -1,0 +1,20 @@
+# USD per one million tokens. Parsed as Decimal.
+# Mock prices are fictional and exist only to demonstrate the cost warning gate.
+# Add entries for live models using your own contract or list rates; a model with
+# no entry is evaluated normally and its cost is reported as "n/a".
+models:
+  mock-v1-baseline:
+    input_per_million_usd: "0.50"
+    output_per_million_usd: "1.50"
+  mock-v2-regression:
+    input_per_million_usd: "0.80"
+    output_per_million_usd: "2.40"
+  mock-v3-fixed:
+    input_per_million_usd: "0.50"
+    output_per_million_usd: "1.50"
+  mock-invalid-json:
+    input_per_million_usd: "0.50"
+    output_per_million_usd: "1.50"
+  # claude-haiku-5-5:
+  #   input_per_million_usd: "<rate>"
+  #   output_per_million_usd: "<rate>"

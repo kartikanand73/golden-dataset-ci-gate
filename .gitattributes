@@ -1,0 +1,5 @@
+# Keep byte-identical line endings so dataset and prompt hashes match on every OS.
+*.jsonl text eol=lf
+*.txt   text eol=lf
+*.yaml  text eol=lf
+*.json  text eol=lf

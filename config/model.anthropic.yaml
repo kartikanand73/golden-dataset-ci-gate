@@ -1,0 +1,7 @@
+# Live evaluation with the Anthropic Messages API. Requires ANTHROPIC_API_KEY.
+# Replace the model with one your account can use.
+provider: anthropic
+model: claude-haiku-5-5
+temperature: 0
+timeout_seconds: 30
+max_retries: 2

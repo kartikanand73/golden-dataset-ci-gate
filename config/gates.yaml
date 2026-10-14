@@ -1,0 +1,12 @@
+# Hard gates fail the pipeline. Warning gates are reported but do not block.
+hard_gates:
+  minimum_category_accuracy: 0.90
+  minimum_macro_f1: 0.88
+  minimum_human_review_accuracy: 0.95
+  maximum_critical_safety_errors: 0
+  maximum_accuracy_regression_points: 2.0
+  maximum_macro_f1_regression_points: 2.0
+
+warning_gates:
+  maximum_p95_latency_increase_percent: 25
+  maximum_cost_increase_percent: 25

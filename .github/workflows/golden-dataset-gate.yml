@@ -1,0 +1,169 @@
+name: Golden Dataset Gate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "mock runs offline; live calls a real provider using repository secrets"
+        type: choice
+        options: [mock, live]
+        default: mock
+      live_config:
+        description: "Model config for live mode"
+        type: string
+        default: config/model.anthropic.yaml
+      live_baseline:
+        description: "Approved baseline directory for the live model (skipped if absent)"
+        type: string
+        default: baselines-live
+
+permissions:
+  contents: read
+
+concurrency:
+  group: golden-gate-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHONUNBUFFERED: "1"
+
+jobs:
+  change-scope:
+    name: Prevent moving the goalposts
+    if: github.event_name != 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .
+      - name: Golden dataset and system must not change together
+        env:
+          BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        run: python -m app.cli check-change-scope --base "$BASE_SHA" --head "$GITHUB_SHA"
+
+  golden-gate:
+    name: Golden dataset gate (mock, no secrets)
+    if: github.event_name != 'workflow_dispatch' || inputs.mode == 'mock'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -e ".[dev]"
+
+      - name: Run unit tests
+        run: |
+          mkdir -p reports
+          python -m pytest --junitxml=reports/unit-tests.xml
+
+      - name: Validate golden dataset schema
+        run: python -m app.cli validate-dataset --dataset data/golden_dataset.jsonl --expect-per-category 15
+
+      - name: Verify golden dataset hash against the approved baseline
+        run: python -m app.cli verify-dataset-hash --dataset data/golden_dataset.jsonl --baseline baselines
+
+      - name: Evaluate candidate configuration
+        run: |
+          python -m app.cli evaluate \
+            --config config/model.yaml \
+            --dataset data/golden_dataset.jsonl \
+            --output reports/candidate
+
+      - name: Compare candidate with approved baseline
+        id: gate
+        run: |
+          set +e
+          python -m app.cli gate \
+            --baseline baselines \
+            --candidate reports/candidate \
+            --policy config/gates.yaml \
+            --output reports/comparison
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Publish comparison to job summary
+        if: always()
+        run: |
+          if [ -f reports/comparison/comparison.md ]; then
+            cat reports/comparison/comparison.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-dataset-reports-${{ github.run_number }}
+          path: reports/
+          if-no-files-found: warn
+
+      - name: Fail when a hard gate fails
+        if: steps.gate.outputs.exit_code != '0'
+        run: |
+          echo "::error title=Golden dataset gate failed::See the job summary and the changed cases in the uploaded reports."
+          exit 1
+
+  live-evaluation:
+    name: Live evaluation (manual, uses secrets)
+    if: github.event_name == 'workflow_dispatch' && inputs.mode == 'live'
+    runs-on: ubuntu-latest
+    environment: live-evaluation
+    env:
+      # Secrets are passed only as environment variables and are never echoed.
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      OPENAI_BASE_URL: ${{ secrets.OPENAI_BASE_URL }}
+      LIVE_CONFIG: ${{ inputs.live_config }}
+      LIVE_BASELINE: ${{ inputs.live_baseline }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e .
+      - name: Validate golden dataset
+        run: python -m app.cli validate-dataset --dataset data/golden_dataset.jsonl --expect-per-category 15
+      - name: Evaluate live model
+        run: |
+          python -m app.cli evaluate --config "$LIVE_CONFIG" \
+            --dataset data/golden_dataset.jsonl --output reports/live-candidate
+      - name: Gate against live baseline when one is approved
+        id: gate
+        run: |
+          set +e
+          if [ -f "$LIVE_BASELINE/manifest.json" ]; then
+            python -m app.cli gate --baseline "$LIVE_BASELINE" --candidate reports/live-candidate \
+              --policy config/gates.yaml --output reports/live-comparison
+            echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+            cat reports/live-comparison/comparison.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "exit_code=0" >> "$GITHUB_OUTPUT"
+            {
+              echo "### Live evaluation (no approved live baseline yet)"
+              echo '```json'
+              cat reports/live-candidate/summary.json
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload live reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-evaluation-reports-${{ github.run_number }}
+          path: reports/
+      - name: Fail when a hard gate fails
+        if: steps.gate.outputs.exit_code != '0'
+        run: exit 1

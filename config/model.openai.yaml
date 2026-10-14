@@ -1,0 +1,8 @@
+# Live evaluation against any OpenAI-compatible endpoint (OpenAI, Azure OpenAI,
+# vLLM, Ollama, LiteLLM). Requires OPENAI_API_KEY; set OPENAI_BASE_URL for
+# non-OpenAI endpoints. Replace the model with one your endpoint serves.
+provider: openai_compatible
+model: your-model-name
+temperature: 0
+timeout_seconds: 30
+max_retries: 2
