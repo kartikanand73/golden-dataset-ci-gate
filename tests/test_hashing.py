@@ -14,18 +14,23 @@ def test_dataset_and_prompt_hashes_are_stable():
 
 
 def test_config_hash_ignores_key_order(tmp_path):
-    reordered = tmp_path / "model.yaml"
+    # Self-contained: must not depend on which model config/model.yaml currently selects.
+    original = tmp_path / "original.yaml"
+    original.write_text("provider: mock\nmodel: mock-v1-baseline\ntemperature: 0\n"
+                        "timeout_seconds: 30\nmax_retries: 2\n", encoding="utf-8", newline="\n")
+    reordered = tmp_path / "reordered.yaml"
     reordered.write_text("max_retries: 2\ntimeout_seconds: 30\nmodel: mock-v1-baseline\n"
                          "temperature: 0\nprovider: mock\n", encoding="utf-8", newline="\n")
-    a = sha256_json(load_model_config(CONFIG).model_dump(mode="json"))
+    a = sha256_json(load_model_config(original).model_dump(mode="json"))
     b = sha256_json(load_model_config(reordered).model_dump(mode="json"))
     assert a == b
 
 
 def test_config_hash_changes_when_model_changes():
     config = load_model_config(CONFIG)
-    changed = config.model_copy(update={"model": "mock-v2-regression"})
-    assert sha256_json(config.model_dump()) != sha256_json(changed.model_dump())
+    v1 = config.model_copy(update={"model": "mock-v1-baseline"})
+    v2 = config.model_copy(update={"model": "mock-v2-regression"})
+    assert sha256_json(v1.model_dump()) != sha256_json(v2.model_dump())
 
 
 def test_canonical_json_is_order_independent():
