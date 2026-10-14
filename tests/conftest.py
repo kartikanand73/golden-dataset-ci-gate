@@ -39,7 +39,7 @@ def baseline_dir(mock_runs, tmp_path) -> Path:
 
 
 def write_jsonl(path: Path, rows: list[dict]) -> Path:
-    path.write_text("".join(json.dumps(r) + "\n" for r in rows), encoding="utf-8")
+    path.write_text("".join(json.dumps(r) + "\n" for r in rows), encoding="utf-8", newline="\n")
     return path
 
 

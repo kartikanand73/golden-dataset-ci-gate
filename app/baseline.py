@@ -62,7 +62,7 @@ def approve_baseline(source_dir: str | Path, baseline_dir: str | Path, dataset_p
     shutil.copyfile(source_dir / SUMMARY_FILE, baseline_dir / SUMMARY_FILE)
     shutil.copyfile(source_dir / PREDICTIONS_FILE, baseline_dir / PREDICTIONS_FILE)
     (baseline_dir / BASELINE_MANIFEST_FILE).write_text(
-        json.dumps(manifest, indent=2) + "\n", encoding="utf-8"
+        json.dumps(manifest, indent=2) + "\n", encoding="utf-8", newline="\n"
     )
     return manifest
 

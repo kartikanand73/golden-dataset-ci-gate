@@ -453,9 +453,9 @@ def write_comparison(comparison: Comparison, output_dir: str | Path) -> None:
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     (output_dir / "comparison.json").write_text(
-        json.dumps(comparison.to_dict(), indent=2) + "\n", encoding="utf-8")
-    (output_dir / "comparison.md").write_text(render_markdown(comparison), encoding="utf-8")
-    (output_dir / "junit.xml").write_text(render_junit(comparison), encoding="utf-8")
-    with (output_dir / "changed-cases.jsonl").open("w", encoding="utf-8") as handle:
+        json.dumps(comparison.to_dict(), indent=2) + "\n", encoding="utf-8", newline="\n")
+    (output_dir / "comparison.md").write_text(render_markdown(comparison), encoding="utf-8", newline="\n")
+    (output_dir / "junit.xml").write_text(render_junit(comparison), encoding="utf-8", newline="\n")
+    with (output_dir / "changed-cases.jsonl").open("w", encoding="utf-8", newline="\n") as handle:
         for case in comparison.changed_cases:
             handle.write(json.dumps(asdict(case)) + "\n")

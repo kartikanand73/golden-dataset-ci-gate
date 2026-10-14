@@ -132,11 +132,11 @@ def build_manifest(config: ModelConfig, dataset_path: Path, prompt_path: Path,
 def write_run(output_dir: Path, summary: dict, records: list[PredictionRecord],
               manifest: dict, manifest_name: str = RUN_MANIFEST_FILE) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
-    (output_dir / SUMMARY_FILE).write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
-    with (output_dir / PREDICTIONS_FILE).open("w", encoding="utf-8") as handle:
+    (output_dir / SUMMARY_FILE).write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8", newline="\n")
+    with (output_dir / PREDICTIONS_FILE).open("w", encoding="utf-8", newline="\n") as handle:
         for record in records:
             handle.write(record.model_dump_json() + "\n")
-    (output_dir / manifest_name).write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+    (output_dir / manifest_name).write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8", newline="\n")
 
 
 def run_evaluation(

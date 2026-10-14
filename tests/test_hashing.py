@@ -16,7 +16,7 @@ def test_dataset_and_prompt_hashes_are_stable():
 def test_config_hash_ignores_key_order(tmp_path):
     reordered = tmp_path / "model.yaml"
     reordered.write_text("max_retries: 2\ntimeout_seconds: 30\nmodel: mock-v1-baseline\n"
-                         "temperature: 0\nprovider: mock\n", encoding="utf-8")
+                         "temperature: 0\nprovider: mock\n", encoding="utf-8", newline="\n")
     a = sha256_json(load_model_config(CONFIG).model_dump(mode="json"))
     b = sha256_json(load_model_config(reordered).model_dump(mode="json"))
     assert a == b
@@ -33,10 +33,10 @@ def test_canonical_json_is_order_independent():
 
 
 def test_dataset_hash_changes_when_one_label_changes(tmp_path):
+    # Bytes, not text: text mode would translate newlines on Windows.
     copy = tmp_path / "golden.jsonl"
-    text = GOLDEN.read_text(encoding="utf-8")
-    copy.write_text(text, encoding="utf-8")
+    data = GOLDEN.read_bytes()
+    copy.write_bytes(data)
     assert sha256_file(copy) == sha256_file(GOLDEN)
-    copy.write_text(text.replace('"requires_human": true', '"requires_human": false', 1),
-                    encoding="utf-8")
+    copy.write_bytes(data.replace(b'"requires_human": true', b'"requires_human": false', 1))
     assert sha256_file(copy) != sha256_file(GOLDEN)
