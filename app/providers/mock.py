@@ -7,7 +7,7 @@ IDs or expected labels, so results come only from the ticket text.
   mock-v1-baseline   security first, broad vocabulary. Passes every gate.
   mock-v2-regression checks password keywords before security keywords (a
                      "simplified prompt"). Security tickets that mention passwords
-                     get automated. Slower and pricier too.
+                     get automated. Slower, pricier and overconfident too.
   mock-v3-fixed      restores security-first precedence, recognises departed-staff
                      incidents, and stops treating a bare "reset" as a password reset.
   mock-invalid-json  always returns malformed JSON (for tests).
@@ -51,6 +51,7 @@ REQUIRES_HUMAN = {
 class MockProfile:
     rules: list[tuple[Category, list[str]]] = field(default_factory=list)
     base_latency_ms: float = 400.0
+    confidence_shift: float = 0.0
     malformed: bool = False
 
 
@@ -70,6 +71,7 @@ PROFILES: dict[str, MockProfile] = {
             (Category.SECURITY_INCIDENT, SECURITY_V1),
         ],
         base_latency_ms=610.0,
+        confidence_shift=0.04,  # also overconfident
     ),
     "mock-v3-fixed": MockProfile(
         rules=[
@@ -106,8 +108,8 @@ class MockProvider(Provider):
         matched = [category for category, patterns in self.profile.rules if _matches(text, patterns)]
         category = matched[0] if matched else Category.GENERAL_SUPPORT
         jitter = (_stable_int(ticket) % 5) / 100
-        confidence = (0.72 if len(matched) > 1 else 0.95) - jitter
-        return category, round(confidence, 2)
+        confidence = (0.72 if len(matched) > 1 else 0.95) - jitter + self.profile.confidence_shift
+        return category, round(min(confidence, 0.99), 2)
 
     def classify(self, request: ProviderRequest) -> ProviderResult:
         if self.profile.malformed:
