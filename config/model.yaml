@@ -1,5 +1,5 @@
 provider: mock
-model: mock-v3-fixed
+model: mock-v2-regression
 temperature: 0
 timeout_seconds: 30
 max_retries: 2
